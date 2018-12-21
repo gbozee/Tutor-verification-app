@@ -113,6 +113,7 @@ export class TutorDetailPage extends React.Component {
       verified: this.state.data.verified
     }).then(data => {
       this.setState({ data, loading: false, record: null });
+      this.props.history.push("/tutor-list");
     });
   };
   localDispatch = (type, values) => {
@@ -188,7 +189,9 @@ export class TutorDetailPage extends React.Component {
       children: "Reject",
       dialogText: "You are about to reject the ID of the tutor. Confirm?",
       confirmAction: () => {
-        this.localDispatch(cActions.REJECT_ID).then(record => {
+        this.localDispatch(cActions.REJECT_ID, {
+          full_name: this.state.data.full_name
+        }).then(record => {
           this.setState({
             record,
             data: {
@@ -242,8 +245,8 @@ export class TutorDetailPage extends React.Component {
         confirmAction: () => {
           this.localDispatch(cActions.UPLOAD_PROFILE_PIC, {
             full_name: data.full_name
-          }).then(() => {
-            this.setState({ profile_rejected: true });
+          }).then(record => {
+            this.setState({ record, profile_rejected: true });
           });
         }
       });
@@ -253,8 +256,8 @@ export class TutorDetailPage extends React.Component {
           children: "Approve",
           disabled: this.state.profile_rejected,
           confirmAction: () => {
-            this.localDispatch(cActions.APPROVE_PROFILE_PIC).then(() => {
-              this.setState({ profile_rejected: true });
+            this.localDispatch(cActions.APPROVE_PROFILE_PIC).then(record => {
+              this.setState({ record, profile_rejected: true });
             });
           },
           dialogText:
@@ -284,6 +287,14 @@ export class TutorDetailPage extends React.Component {
       ? data.verified
       : true;
   }
+  fromWorkingDirectory = () => {
+    let {
+      match: {
+        params: { email }
+      }
+    } = this.props;
+    return Boolean(email);
+  };
   render() {
     let { data } = this.state;
     console.log(data.profile_pic);
@@ -415,17 +426,15 @@ export class TutorDetailPage extends React.Component {
             </>
           ) : null}
           <Flex justifyContent="space-between" pt={3}>
-            {!data.verified ||
-              (Boolean(this.state.record) &&
-                Object.keys(this.state.record).length > 0 && (
-                  <DialogButton
-                    dialogText="Are you sure you want to approve this tutor"
-                    confirmAction={this.approveTutor}
-                    disabled={this.state.loading}
-                  >
-                    {!data.verified ? `Approve Tutor` : `Remove from List`}
-                  </DialogButton>
-                ))}
+            {!data.verified && (
+              <DialogButton
+                dialogText="Are you sure you want to approve this tutor"
+                confirmAction={this.approveTutor}
+                disabled={this.state.loading || this.state.record}
+              >
+                {`Approve Tutor`}
+              </DialogButton>
+            )}
             <DialogButton
               dialogText="Are you sure you want to deny this tutor?"
               confirmAction={this.denyTutor}
