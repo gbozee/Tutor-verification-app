@@ -113,7 +113,7 @@ export class TutorListPage extends React.Component {
                 displayDate={false}
                 selection={this.state.selection}
                 onFilterChange={e =>
-                  this.setState({ selection: e.target.value }, () => {
+                  this.setState({ tutors:[],selection: e.target.value }, () => {
                     this.fetchList();
                   })
                 }
@@ -121,7 +121,7 @@ export class TutorListPage extends React.Component {
                 filterOptions={[
                   { value: "", label: "All" },
                   {
-                    value: "new_applicant",
+                    value: "new_applicants",
                     label: "New Applicants Only"
                   },
                   { value: "verified_tutors", label: "Verified Tutors" }

@@ -7,7 +7,7 @@ import {
 
 function getAllUnverifiedTutors({ selection }) {
   let options = {
-    new_applicant: x => x.verified === false,
+    new_applicants: x => x.verified === false,
     verified_tutors: x => x.verified === true
   };
   let filterFunc = options[selection];

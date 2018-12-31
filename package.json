@@ -17,7 +17,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "copy_now": "cp now.json.sample ./build/now.json",
-    "deploy": "now --no-clipboard --token=$NOW_TOKEN --build-env REACT_APP_FIREBASE_API_KEY=$FIREBASE_API_KEY  --build-env REACT_APP_FIREBASE_PROJECT_ID=$FIREBASE_PROJECT_ID && now alias"
+    "deploy": "now --no-clipboard --token=$NOW_TOKEN --build-env REACT_APP_FIREBASE_API_KEY=$FIREBASE_API_KEY  --build-env REACT_APP_FIREBASE_PROJECT_ID=$FIREBASE_PROJECT_ID --build-env REACT_APP_ENDPOINT_URL=$ENDPOINT_URL && now alias"
   },
   "eslintConfig": {
     "extends": "react-app"

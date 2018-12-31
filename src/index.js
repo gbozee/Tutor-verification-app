@@ -6,7 +6,7 @@ import ReactDOM from "react-dom";
 import { Flex } from "@rebass/emotion";
 import { Route, Redirect, Link } from "react-router-dom";
 import ProtectedRoute from "tuteria-shared/lib/shared/ProtectedRoute";
-import { devAdapter } from "./adapters";
+import devAdapter from "./adapters/devProd";
 import WithRouter from "tuteria-shared/lib/shared/PageSetup";
 import appContext from "./appContext";
 // import appFirebase from "./adapters/backupFirebase";
@@ -20,7 +20,7 @@ function App() {
     <WithRouter
       adapter={devAdapter}
       context={appContext}
-    //   firebase={appFirebase}
+      //   firebase={appFirebase}
       toNextPage={props => props.history.push("/tutor-list")}
       heading={
         <Flex

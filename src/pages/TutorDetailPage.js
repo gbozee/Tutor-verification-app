@@ -281,10 +281,14 @@ export class TutorDetailPage extends React.Component {
     return result;
   };
   idVerified(data = {}, force = false) {
+    let newData = data
+    if(!Boolean(data)){
+      newData = {}
+    }
     return force
-      ? Boolean(data.verified)
-      : Object.keys(data).length > 0
-      ? data.verified
+      ? Boolean(newData.verified)
+      : Object.keys(newData).length > 0
+      ? newData.verified
       : true;
   }
   fromWorkingDirectory = () => {
@@ -352,9 +356,9 @@ export class TutorDetailPage extends React.Component {
                 cursor: pointer;
               `}
               target="_blank"
-              href={`http://www.google.com`}
+              href={data.profile_pic}
             >
-              http://ww.google.com
+              {data.profile_pic}
             </Link>
           </VerificationItem>
 
@@ -419,10 +423,10 @@ export class TutorDetailPage extends React.Component {
               ))}
             </Flex>
           </Flex>
-          {data.currriculum_explanation ? (
+          {data.curriculum_explanation ? (
             <>
               <Heading>Curriculum Explanation</Heading>
-              <Text p={3}>{data.currriculum_explanation}</Text>
+              <Text p={3}>{data.curriculum_explanation}</Text>
             </>
           ) : null}
           <Flex justifyContent="space-between" pt={3}>
