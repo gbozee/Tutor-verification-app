@@ -1,13 +1,13 @@
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
-import { Box, Flex, Button, Text } from "@rebass/emotion";
-import React from "react";
-import { AsLink } from "tuteria-shared/lib/shared/reusables";
-import { Link } from "react-router-dom";
-import { DataContext } from "tuteria-shared/lib/shared/DataContext";
-import { SpinnerContainer } from "tuteria-shared/lib/shared/primitives/Spinner";
+import { css, jsx } from '@emotion/core';
+import { Box, Flex, Button, Text } from '@rebass/emotion';
+import React from 'react';
+import { AsLink } from 'tuteria-shared/lib/shared/reusables';
+import { Link } from 'react-router-dom';
+import { DataContext } from 'tuteria-shared/lib/shared/DataContext';
+import { SpinnerContainer } from 'tuteria-shared/lib/shared/primitives/Spinner';
 
-import { DateFilter } from "tuteria-shared/lib/shared/DateFilter";
+import { DateFilter } from 'tuteria-shared/lib/shared/DateFilter';
 export const ListItem = ({
   heading,
   subHeading,
@@ -59,10 +59,10 @@ export class TutorListPage extends React.Component {
 
   state = {
     tutors: [],
-    selection: ""
+    selection: '',
   };
   static defaultProps = {
-    detailPageUrl: () => {}
+    detailPageUrl: () => {},
   };
   componentDidMount() {
     this.fetchList(true);
@@ -72,7 +72,7 @@ export class TutorListPage extends React.Component {
     let { dispatch, actions } = this.context;
     dispatch({
       type: actions.GET_UNVERIFIED_TUTORS,
-      value: { refresh, selection: this.state.selection }
+      value: { refresh, selection: this.state.selection },
     }).then(data => {
       this.setState({ tutors: data });
     });
@@ -81,8 +81,10 @@ export class TutorListPage extends React.Component {
     this.fetchList(true);
   };
   getState = (location = []) => {
-    let result = location[0] || {};
-    return result.state;
+    if (location) {
+      let result = location[0] || {};
+      return result.state;
+    }
   };
   render() {
     return (
@@ -119,12 +121,12 @@ export class TutorListPage extends React.Component {
                 }
                 placeholder="Search by email"
                 filterOptions={[
-                  { value: "", label: "All" },
+                  { value: '', label: 'All' },
                   {
-                    value: "new_applicant",
-                    label: "New Applicants Only"
+                    value: 'new_applicant',
+                    label: 'New Applicants Only',
                   },
-                  { value: "verified_tutors", label: "Verified Tutors" }
+                  { value: 'verified_tutors', label: 'Verified Tutors' },
                 ]}
               />
             </Flex>

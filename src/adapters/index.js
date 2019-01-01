@@ -1,5 +1,6 @@
 import devAdapter from "./dev";
-export { devAdapter };
+import liveAdapter from './live';
+export { devAdapter, liveAdapter };
 
 export function filterHelper(
   data,

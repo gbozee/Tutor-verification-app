@@ -89,6 +89,7 @@ export class TutorDetailPage extends React.Component {
     console.log({ email, slug });
     dispatch({
       type: actions.TUTOR_INFO,
+      // value: { email, slug }
       value: { email, slug }
     })
       .then(data => {

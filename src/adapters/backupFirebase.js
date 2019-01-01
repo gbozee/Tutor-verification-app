@@ -54,6 +54,7 @@ function appFireBase(keys) {
       return genericGet(docRef, { record: defaultParam }).then(d => d.record);
     },
     loginUser: (email, password) => {
+      console.log(process.env.REACT_APP_FIREBASE_API_KEY)
       return import(`firebase/auth`)
         .then(() => {
           return firebase
