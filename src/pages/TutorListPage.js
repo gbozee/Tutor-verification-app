@@ -113,9 +113,12 @@ export class TutorListPage extends React.Component {
                 displayDate={false}
                 selection={this.state.selection}
                 onFilterChange={e =>
-                  this.setState({ tutors:[],selection: e.target.value }, () => {
-                    this.fetchList();
-                  })
+                  this.setState(
+                    { tutors: [], selection: e.target.value },
+                    () => {
+                      this.fetchList();
+                    }
+                  )
                 }
                 placeholder="Search by email"
                 filterOptions={[

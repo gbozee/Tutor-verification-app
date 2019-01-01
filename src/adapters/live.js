@@ -17,7 +17,7 @@ slug
 const query = ({ selection, size = 50, email_exclude = [] }) => {
   let params = `(result_size:${size},`;
   if (email_exclude.length > 0) {
-    params += `email_exclude=${JSON.stringify(email_exclude)},`;
+    params += `email_exclude:${JSON.stringify(email_exclude)},`;
   }
   if (Boolean(selection)) {
     params += `${selection}:true,`;
@@ -79,9 +79,9 @@ function responseCallback(key) {
 function mutationCallback(mutation) {
   return response => response.data.data[mutation];
 }
-function getAllUnverifiedTutors({ selection }) {
+function getAllUnverifiedTutors(params) {
   return axios
-    .post(baseUrl, { query: query({ selection }) })
+    .post(baseUrl, { query: query(params) })
     .then(responseCallback("all_unverified_tutors"));
 }
 

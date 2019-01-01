@@ -101,16 +101,25 @@ const getUnverifiedTutors = (
   params,
   { getAdapter, state, updateState }
 ) => {
-  return Promise.all([
-    getWorkingDataRecords(firebaseAction, null, {
-      state,
-      updateState
-    }),
-    getAdapter().getAllUnverifiedTutors(params)
-  ]).then(data => {
-    let emailsOnly = data[0].map(x => x.email);
-    return data[1].filter(x => !emailsOnly.includes(x.email));
+  return getWorkingDataRecords(firebaseAction, null, {
+    state,
+    updateState
+  }).then(pending_verifications => {
+    return getAdapter().getAllUnverifiedTutors({
+      ...params,
+      email_exclude: pending_verifications.map(x => x.email)
+    });
   });
+  // return Promise.all([
+  //   getWorkingDataRecords(firebaseAction, null, {
+  //     state,
+  //     updateState
+  //   }),
+  //   getAdapter().getAllUnverifiedTutors(params)
+  // ]).then(data => {
+  //   let emailsOnly = data[0].map(x => x.email);
+  //   return data[1].filter(x => !emailsOnly.includes(x.email));
+  // });
 };
 function approveTutor(
   firebaseAction,

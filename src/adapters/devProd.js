@@ -1,7 +1,7 @@
 import LiveData from "./live";
 
-function getAllUnverifiedTutors({ selection }) {
-  return LiveData.getAllUnverifiedTutors({ selection });
+function getAllUnverifiedTutors(params) {
+  return LiveData.getAllUnverifiedTutors(params);
 }
 
 function fetchTutorDetail(props) {
