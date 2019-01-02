@@ -1,54 +1,13 @@
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
-import { Box, Flex, Button, Text } from "@rebass/emotion";
+import {  Flex, Button } from "@rebass/emotion";
 import React from "react";
-import { AsLink } from "tuteria-shared/lib/shared/reusables";
+import { ListItem } from "tuteria-shared/lib/shared/reusables";
 import { Link } from "react-router-dom";
 import { DataContext } from "tuteria-shared/lib/shared/DataContext";
 import { SpinnerContainer } from "tuteria-shared/lib/shared/primitives/Spinner";
 
 import { DateFilter } from "tuteria-shared/lib/shared/DateFilter";
-export const ListItem = ({
-  heading,
-  subHeading,
-  date,
-  rightSection,
-  verified = false,
-  gender,
-  to,
-  ...rest
-}) => {
-  return (
-    <AsLink to={to} {...rest}>
-      <Flex
-        py={3}
-        px={2}
-        width={1}
-        justifyContent="space-between"
-        css={css`
-          border-bottom: 1px solid black;
-        `}
-      >
-        <Box>
-          <Text>{date}</Text>
-          <Text fontSize={5}>{heading}</Text>
-          <Text>{subHeading}</Text>
-        </Box>
-        <Flex
-          flexDirection="column"
-          css={css`
-            align-self: center;
-            align-items: center;
-          `}
-        >
-          <Text>{gender}</Text>
-          <Box>{rightSection}</Box>
-          {verified && <Text>✔</Text>}
-        </Flex>
-      </Flex>
-    </AsLink>
-  );
-};
 function determineAge(date) {
   let year = new Date(date).getFullYear();
 
