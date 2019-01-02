@@ -66,8 +66,31 @@ const queries = {
   approveTutor: `
     mutation approveTutor($email: String!, $verified: Boolean!){
         approve_tutor(email: $email, verified: $verified) {
-        user
-        } 
+        user {
+          slug
+          profile_pic
+          full_name
+          email
+          dob
+          gender
+          state
+          verified
+          email_verified
+          identification
+          phone_no
+          years_of_experience
+          tutor_description
+          educations
+          work_experiences
+          locations
+          potential_subjects
+          levels_with_exam
+          answers
+          classes
+          curriculum_used
+          curriculum_explanation
+        }
+      } 
     }`,
 };
 
@@ -94,8 +117,8 @@ function fetchTutorDetail(params) {
   return makeApiCall(queries['tutorDetail'], params);
 }
 
-function approveTutor(params) {
-  return makeApiCall(queries['approveTutor'], params);
+function approveTutor(email, verify, verified) {
+  return makeApiCall(queries['approveTutor'], {email, verify, verified});
 }
 
 export default {

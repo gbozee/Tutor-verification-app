@@ -86,7 +86,6 @@ export class TutorDetailPage extends React.Component {
       history,
     } = this.props;
     let { dispatch, actions } = this.context;
-    console.log({ email, slug });
     dispatch({
       type: actions.TUTOR_INFO,
       // value: { email, slug }
@@ -97,7 +96,6 @@ export class TutorDetailPage extends React.Component {
         const {
           tutor_verification_endpoint: { tutor_detail },
         } = data.data.data.data;
-        console.log(tutor_detail)
         this.setState({data: tutor_detail});
       })
       .catch(error => {
@@ -117,7 +115,10 @@ export class TutorDetailPage extends React.Component {
     return this.localDispatch(cActions.APPROVE_TUTOR, {
       verified: this.state.data.verified,
     }).then(data => {
-      this.setState({ data, loading: false, record: null });
+      console.log(data)
+      const { approve_tutor: {user}} = data.data.data;
+      this.setState({ data: user, loading: false, record: null });
+      // this.setState({ data, loading: false, record: null });
       this.props.history.push('/tutor-list');
     });
   };
