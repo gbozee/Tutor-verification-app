@@ -1,21 +1,21 @@
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
-import { Flex, Text, Heading, Image, Link } from "@rebass/emotion";
-import { DialogButton } from "tuteria-shared/lib/shared/primitives";
-import { HomePageSpinner } from "tuteria-shared/lib/shared/primitives/Spinner";
-import React from "react";
+import { css, jsx } from '@emotion/core';
+import { Flex, Text, Heading, Image, Link } from '@rebass/emotion';
+import { DialogButton } from 'tuteria-shared/lib/shared/primitives';
+import { HomePageSpinner } from 'tuteria-shared/lib/shared/primitives/Spinner';
+import React from 'react';
 import {
   ListGroup,
   ListItem,
-  DetailItem
-} from "tuteria-shared/lib/shared/reusables";
-import { DataContext } from "tuteria-shared/lib/shared/DataContext";
-import { actions as cActions } from "../appContext";
+  DetailItem,
+} from 'tuteria-shared/lib/shared/reusables';
+import { DataContext } from 'tuteria-shared/lib/shared/DataContext';
+import { actions as cActions } from '../appContext';
 
 export const DetailHeader = ({
-  image = "https://via.placeholder.com/100",
+  image = 'https://via.placeholder.com/100',
   detail,
-  children
+  children,
 }) => {
   return (
     <Flex>
@@ -63,9 +63,9 @@ const VerificationItem = ({ label, children, buttons = [] }) => {
   );
 };
 const actions = {
-  EMAIL_VERIFICATION: "email_verification",
-  ID_VERIFICATION: "id_verification",
-  PROFILE_VERIFICATION: "profile_verification"
+  EMAIL_VERIFICATION: 'email_verification',
+  ID_VERIFICATION: 'id_verification',
+  PROFILE_VERIFICATION: 'profile_verification',
 };
 export class TutorDetailPage extends React.Component {
   static contextType = DataContext;
@@ -76,45 +76,49 @@ export class TutorDetailPage extends React.Component {
     record: null,
     email_approval: false,
     id_verified: false,
-    profile_rejected: false
+    profile_rejected: false,
   };
   componentDidMount() {
     let {
       match: {
-        params: { email, slug }
+        params: { email, slug },
       },
-      history
+      history,
     } = this.props;
     let { dispatch, actions } = this.context;
     console.log({ email, slug });
     dispatch({
       type: actions.TUTOR_INFO,
       // value: { email, slug }
-      value: { email, slug }
+      value: { email, slug },
     })
       .then(data => {
         console.log({ data });
-        this.setState(data);
+        const {
+          tutor_verification_endpoint: { tutor_detail },
+        } = data.data.data.data;
+        console.log(tutor_detail)
+        this.setState({data: tutor_detail});
       })
       .catch(error => {
-        history.push("/tutor-list");
+        history.push('/tutor-list');
       });
   }
   denyTutor = () => {
     this.setState({ loading: true });
     return this.localDispatch(cActions.DENY_TUTOR).then(data => {
       this.setState({ data, loading: false });
-      this.props.history.push("/tutor-list");
+      this.props.history.push('/tutor-list');
     });
   };
 
   approveTutor = () => {
     this.setState({ loading: true });
     return this.localDispatch(cActions.APPROVE_TUTOR, {
-      verified: this.state.data.verified
+      verified: this.state.data.verified,
     }).then(data => {
       this.setState({ data, loading: false, record: null });
-      this.props.history.push("/tutor-list");
+      this.props.history.push('/tutor-list');
     });
   };
   localDispatch = (type, values) => {
@@ -123,24 +127,24 @@ export class TutorDetailPage extends React.Component {
       type,
       value: Boolean(values)
         ? { email: this.state.data.email, ...values }
-        : this.state.data.email
+        : this.state.data.email,
     });
   };
   emailButtons = () => {
     let { record, email_approval } = this.state;
     let approveManually = {
-      children: "Approve Manually",
-      dialogText: "Are you sure you want to manually approve the email",
+      children: 'Approve Manually',
+      dialogText: 'Are you sure you want to manually approve the email',
       confirmAction: () => {
         this.localDispatch(cActions.APPROVE_TUTOR_EMAIL).then(record => {
           this.setState({
             record,
 
             data: { ...this.state.data, email_verified: true },
-            email_approval: true
+            email_approval: true,
           });
         });
-      }
+      },
     };
     let data = email_approval
       ? [approveManually]
@@ -148,19 +152,19 @@ export class TutorDetailPage extends React.Component {
           {
             confirmAction: () => {
               this.localDispatch(cActions.NOTIFY_TUTOR_ABOUT_EMAIL, {
-                full_name: this.state.data.full_name
+                full_name: this.state.data.full_name,
               }).then(record => {
                 this.setState({ record });
               });
             },
             dialogText:
-              "Are you sure you want to notify the tutor about his email?",
+              'Are you sure you want to notify the tutor about his email?',
             children:
               record && record.actions.includes(actions.EMAIL_VERIFICATION)
-                ? "Send Notice Again"
-                : "Send Notice"
+                ? 'Send Notice Again'
+                : 'Send Notice',
           },
-          approveManually
+          approveManually,
         ];
     return data;
   };
@@ -172,36 +176,36 @@ export class TutorDetailPage extends React.Component {
     ) {
       return [
         {
-          children: "Send Email Notice",
+          children: 'Send Email Notice',
           disabled: this.state.id_verified,
           dialogText:
-            "Are you sure you want to notify the tutor to upload an ID?",
+            'Are you sure you want to notify the tutor to upload an ID?',
           confirmAction: () => {
             this.localDispatch(cActions.UPLOAD_ID, {
-              full_name: data.full_name
+              full_name: data.full_name,
             }).then(record => {
               this.setState({ id_verified: true, record });
             });
-          }
-        }
+          },
+        },
       ];
     }
     let reject = {
-      children: "Reject",
-      dialogText: "You are about to reject the ID of the tutor. Confirm?",
+      children: 'Reject',
+      dialogText: 'You are about to reject the ID of the tutor. Confirm?',
       confirmAction: () => {
         this.localDispatch(cActions.REJECT_ID, {
-          full_name: this.state.data.full_name
+          full_name: this.state.data.full_name,
         }).then(record => {
           this.setState({
             record,
             data: {
               ...this.state.data,
-              identification: {}
-            }
+              identification: {},
+            },
           });
         });
-      }
+      },
     };
     data = id_verified
       ? []
@@ -209,7 +213,7 @@ export class TutorDetailPage extends React.Component {
           {
             confirmAction: () => {
               this.localDispatch(cActions.APPROVE_ID, {
-                full_name: this.state.data.full_name
+                full_name: this.state.data.full_name,
               }).then(record => {
                 this.setState({
                   record,
@@ -218,19 +222,19 @@ export class TutorDetailPage extends React.Component {
                     ...this.state.data,
                     identification: {
                       ...this.state.data.identification,
-                      verified: true
-                    }
-                  }
+                      verified: true,
+                    },
+                  },
                 });
               });
             },
-            dialogText: "Are you sure you want to approve the ID?",
+            dialogText: 'Are you sure you want to approve the ID?',
             children:
               record && record.actions.includes(actions.ID_VERIFICATION)
-                ? "Approve Again"
-                : "Approve ID"
+                ? 'Approve Again'
+                : 'Approve ID',
           },
-          reject
+          reject,
         ];
     return data;
   };
@@ -239,22 +243,22 @@ export class TutorDetailPage extends React.Component {
     let { record, data } = this.state;
     if (!Boolean(data.profile_pic)) {
       result.push({
-        children: "Send Notice",
+        children: 'Send Notice',
         disabled: this.state.profile_rejected,
         dialogText:
-          "Are you sure you want to notify the tutor to upload a profile Pic?",
+          'Are you sure you want to notify the tutor to upload a profile Pic?',
         confirmAction: () => {
           this.localDispatch(cActions.UPLOAD_PROFILE_PIC, {
-            full_name: data.full_name
+            full_name: data.full_name,
           }).then(record => {
             this.setState({ record, profile_rejected: true });
           });
-        }
+        },
       });
     } else {
       if (record && record.actions.includes(actions.PROFILE_VERIFICATION)) {
         result.push({
-          children: "Approve",
+          children: 'Approve',
           disabled: this.state.profile_rejected,
           confirmAction: () => {
             this.localDispatch(cActions.APPROVE_PROFILE_PIC).then(record => {
@@ -262,28 +266,28 @@ export class TutorDetailPage extends React.Component {
             });
           },
           dialogText:
-            "Are you sure you want to approve the profilePic for the tutor?"
+            'Are you sure you want to approve the profilePic for the tutor?',
         });
       }
       result.push({
-        children: "Reject",
+        children: 'Reject',
         disabled: this.state.profile_rejected,
         confirmAction: () => {
           this.localDispatch(cActions.REJECT_PROFILE_PIC, {
-            full_name: this.state.data.full_name
+            full_name: this.state.data.full_name,
           }).then(() => {
             this.setState({ profile_rejected: true });
           });
         },
         dialogText:
-          "Are you sure you want to delete the profilePic for the tutor?"
+          'Are you sure you want to delete the profilePic for the tutor?',
       });
     }
     return result;
   };
   idVerified(data = {}, force = false) {
     return force
-      ? Boolean(data.verified)
+      ? Boolean(data) && Boolean(data.verified)
       : Object.keys(data).length > 0
       ? data.verified
       : true;
@@ -291,8 +295,8 @@ export class TutorDetailPage extends React.Component {
   fromWorkingDirectory = () => {
     let {
       match: {
-        params: { email }
-      }
+        params: { email },
+      },
     } = this.props;
     return Boolean(email);
   };
@@ -309,7 +313,7 @@ export class TutorDetailPage extends React.Component {
             data.years_of_experience,
             data.full_name,
             data.email,
-            data.phone_no
+            data.phone_no,
           ]}
         >
           {this.idVerified(data.identification, true) && (

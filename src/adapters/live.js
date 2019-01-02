@@ -90,11 +90,11 @@ function getAllUnverifiedTutors(params) {
   });
 }
 
-function fetchTutorDetail(query, params) {
+function fetchTutorDetail(params) {
   return makeApiCall(queries['tutorDetail'], params);
 }
 
-function approveTutor(query, params) {
+function approveTutor(params) {
   return makeApiCall(queries['approveTutor'], params);
 }
 

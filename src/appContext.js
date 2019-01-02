@@ -82,7 +82,6 @@ function fetchTutorDetail(
   props,
   { getAdapter, state, updateState }
 ) {
-  console.log(props)
   return Promise.all([
     getWorkingDataRecords(firebaseAction, null, {
       state,
@@ -109,7 +108,6 @@ const getUnverifiedTutors = (
     }),
     getAdapter().getAllUnverifiedTutors(params)
   ]).then(data => {
-    console.log(data)
     let emailsOnly = data[0].map(x => x.email);
     return data[1].data.data.tutor_verification_endpoint.all_unverified_tutors.filter(x => !emailsOnly.includes(x.email));
   });
