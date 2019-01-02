@@ -88,15 +88,10 @@ export class TutorDetailPage extends React.Component {
     let { dispatch, actions } = this.context;
     dispatch({
       type: actions.TUTOR_INFO,
-      // value: { email, slug }
       value: { email, slug },
     })
       .then(data => {
-        console.log({ data });
-        const {
-          tutor_verification_endpoint: { tutor_detail },
-        } = data.data.data.data;
-        this.setState({data: tutor_detail});
+        this.setState(data);
       })
       .catch(error => {
         history.push('/tutor-list');
@@ -115,10 +110,7 @@ export class TutorDetailPage extends React.Component {
     return this.localDispatch(cActions.APPROVE_TUTOR, {
       verified: this.state.data.verified,
     }).then(data => {
-      console.log(data)
-      const { approve_tutor: {user}} = data.data.data;
-      this.setState({ data: user, loading: false, record: null });
-      // this.setState({ data, loading: false, record: null });
+      this.setState({ data, loading: false, record: null });
       this.props.history.push('/tutor-list');
     });
   };
