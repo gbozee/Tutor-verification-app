@@ -1,36 +1,28 @@
 import axios from 'axios';
 
 const BASE_URL = process.env.REACT_APP_ENDPOINT_URL;
+let isDevelop = process.env.NODE_ENV !== "production";
 const config = {
   headers: { 'Content-Type': 'application/json' },
 };
+const globalFields = `
+  slug
+  profile_pic
+  identification
+  full_name
+  email
+  dob
+  state
+  gender
+  verified
+    email_verified
+`;
 const queries = {
   allUnverifiedTutors: `
     query allUnverifiedTutors($new_applicants: Boolean, $verified_tutors: Boolean, $result_size: Int) {
         tutor_verification_endpoint {
             all_unverified_tutors(new_applicants: $new_applicants, verified_tutors: $verified_tutors, result_size: $result_size) {
-              slug
-              profile_pic
-              full_name
-              email
-              dob
-              gender
-              state
-              verified
-              email_verified
-              identification
-              phone_no
-              years_of_experience
-              tutor_description
-              educations
-              work_experiences
-              locations
-              potential_subjects
-              levels_with_exam
-              answers
-              classes
-              curriculum_used
-              curriculum_explanation
+              ${globalFields}
             }
         }
     }`,
@@ -38,15 +30,7 @@ const queries = {
     query tutorDetail($slug: String, $email: String) {
       tutor_verification_endpoint {
         tutor_detail(slug: $slug, email: $email) {
-          slug
-          profile_pic
-          full_name
-          email
-          dob
-          gender
-          state
-          verified
-          email_verified
+          ${globalFields}
           identification
           phone_no
           years_of_experience
@@ -65,36 +49,13 @@ const queries = {
     }`,
   approveTutor: `
     mutation approveTutor($email: String!, $verified: Boolean!){
-        approve_tutor(email: $email, verified: $verified) {
-        user {
-          slug
-          profile_pic
-          full_name
-          email
-          dob
-          gender
-          state
-          verified
-          email_verified
-          identification
-          phone_no
-          years_of_experience
-          tutor_description
-          educations
-          work_experiences
-          locations
-          potential_subjects
-          levels_with_exam
-          answers
-          classes
-          curriculum_used
-          curriculum_explanation
-        }
+        approve_tutor(email: $email, verified: $verified, test: ${isDevelop}) {
+          user
       } 
     }`,
   adminActionMutations: `
       mutation adminActions($action: String!, $email: String!) {
-        admin_actions(action: $action, email: $email) {
+        admin_actions(action: $action, email: $email, test: ${isDevelop}) {
           status
           errors
         }
@@ -134,11 +95,10 @@ function fetchTutorDetail(params) {
   );
 }
 
-function approveTutor(email, verify, verified) {
+function approveTutor(email, approved=false) {
   return makeApiCall(queries['approveTutor'], {
     email,
-    verify: false,
-    verified,
+    verified:approved,
   })
     .then(mutationCallback('approve_tutor'))
     .then(data => data.user);
@@ -166,28 +126,28 @@ function rejectProfilePic(email) {
 }
 
 function approveIdentification(email) {
-  return makeApiCall(queries['adminActionMutatuions'], {
+  return makeApiCall(queries['adminActionMutations'], {
     email,
     action: 'approve_identification',
   });
 }
 
 function rejectIdentification(email) {
-  return makeApiCall(queries['adminActionMutatuions'], {
+  return makeApiCall(queries['adminActionMutations'], {
     email,
     action: 'reject_identification',
   });
 }
 
 function uploadProfilePicEmail(email) {
-  return makeApiCall(queries['adminActionMutatuions'], {
+  return makeApiCall(queries['adminActionMutations'], {
     email,
     action: 'upload_profile_pic_email',
   });
 }
 
 function uploadVerificationIdEmail(email) {
-  return makeApiCall(queries['adminActionMutatuions'], {
+  return makeApiCall(queries['adminActionMutations'], {
     email,
     action: 'upload_verification_email',
   });
