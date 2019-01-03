@@ -50,7 +50,22 @@ const queries = {
   approveTutor: `
     mutation approveTutor($email: String!, $verified: Boolean!){
         approve_tutor(email: $email, verified: $verified, test: ${isDevelop}) {
-          user
+          user {
+            ${globalFields}
+            identification
+            phone_no
+            years_of_experience
+            tutor_description
+            educations
+            work_experiences
+            locations
+            potential_subjects
+            levels_with_exam
+            answers
+            classes
+            curriculum_used
+            curriculum_explanation
+          }
       } 
     }`,
   adminActionMutations: `
