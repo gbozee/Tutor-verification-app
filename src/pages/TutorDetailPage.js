@@ -1,67 +1,19 @@
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
-import { Flex, Text, Heading, Image, Link } from "@rebass/emotion";
+import { Flex, Text, Heading,  Link } from "@rebass/emotion";
 import { DialogButton } from "tuteria-shared/lib/shared/primitives";
 import { HomePageSpinner } from "tuteria-shared/lib/shared/primitives/Spinner";
 import React from "react";
 import {
   ListGroup,
   ListItem,
-  DetailItem
+  DetailItem,
+  TutorDetailHeader,
+  VerificationItem
 } from "tuteria-shared/lib/shared/reusables";
 import { DataContext } from "tuteria-shared/lib/shared/DataContext";
 import { actions as cActions } from "../appContext";
 
-export const DetailHeader = ({
-  image = "https://via.placeholder.com/100",
-  detail,
-  children
-}) => {
-  return (
-    <Flex>
-      <Image src={image} height={100} />
-      <Flex
-        mb={4}
-        flexDirection="column"
-        css={css`
-          flex: 2;
-        `}
-      >
-        <Text mb={1}>{detail[0]}</Text>
-        <Heading fontSize={5}>{detail[1]}</Heading>
-        <Text mb={1}>{detail[2]}</Text>
-        <Text mb={1}>{detail[3]}</Text>
-      </Flex>
-      <Flex
-        flexDirection="column"
-        css={css`
-          align-self: center;
-        `}
-      >
-        {children}
-      </Flex>
-    </Flex>
-  );
-};
-const VerificationItem = ({ label, children, buttons = [] }) => {
-  return (
-    <Flex py={3} justifyContent="space-between">
-      <Flex flexDirection="column">
-        {label && (
-          <Text fontWeight="bold" pb={3}>
-            {label}
-          </Text>
-        )}
-        {children}
-      </Flex>
-      <Flex>
-        {buttons.map((button, index) => (
-          <DialogButton mr={index === 0 ? 3 : 0} {...button} />
-        ))}
-      </Flex>
-    </Flex>
-  );
-};
 const actions = {
   EMAIL_VERIFICATION: "email_verification",
   ID_VERIFICATION: "id_verification",
@@ -307,7 +259,7 @@ export class TutorDetailPage extends React.Component {
       <HomePageSpinner />
     ) : (
       <Flex flexDirection="column">
-        <DetailHeader
+        <TutorDetailHeader
           image={data.profile_pic}
           detail={[
             data.years_of_experience,
@@ -321,7 +273,7 @@ export class TutorDetailPage extends React.Component {
           )}
           {data.email_verified && <Text>Email Verified</Text>}
           <Text>Social Veifications</Text>
-        </DetailHeader>
+        </TutorDetailHeader>
         <Flex mb={4} flexDirection="column">
           <ListGroup name="Verifications" />
           {data.email_verified ? null : (

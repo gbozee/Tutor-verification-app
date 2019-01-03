@@ -6,11 +6,7 @@ import ReactDOM from "react-dom";
 import { Flex } from "@rebass/emotion";
 import { Route, Redirect, Link } from "react-router-dom";
 import ProtectedRoute from "tuteria-shared/lib/shared/ProtectedRoute";
-<<<<<<< HEAD
-import { devAdapter, liveAdapter } from "./adapters";
-=======
 import devAdapter from "./adapters/devProd";
->>>>>>> 1220463a45ed478251f1d5c6e1db3640cff64241
 import WithRouter from "tuteria-shared/lib/shared/PageSetup";
 import appContext from "./appContext";
 // import appFirebase from "./adapters/backupFirebase";

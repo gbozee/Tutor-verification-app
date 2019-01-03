@@ -1,155 +1,167 @@
-import axios from "axios";
+import axios from 'axios';
 
-let baseUrl = process.env.REACT_APP_ENDPOINT_URL;
-
+const BASE_URL = process.env.REACT_APP_ENDPOINT_URL;
+let isDevelop = process.env.NODE_ENV !== "production";
+const config = {
+  headers: { 'Content-Type': 'application/json' },
+};
 const globalFields = `
-slug
-      profile_pic
-      identification
-      full_name
-      email
-      dob
-      state
-      gender
-      verified
-      email_verified
+  slug
+  profile_pic
+  identification
+  full_name
+  email
+  dob
+  state
+  gender
+  verified
+    email_verified
 `;
-const query = ({ selection, size = 50, email_exclude = [] }) => {
-  let params = `(result_size:${size},`;
-  if (email_exclude.length > 0) {
-    params += `email_exclude:${JSON.stringify(email_exclude)},`;
-  }
-  if (Boolean(selection)) {
-    params += `${selection}:true,`;
-  }
-  return `
-{
-    tutor_verification_endpoint{
-    all_unverified_tutors${params}){
-      ${globalFields}
-    }
-  }
-}`;
+const queries = {
+  allUnverifiedTutors: `
+    query allUnverifiedTutors($new_applicants: Boolean, $verified_tutors: Boolean, $result_size: Int) {
+        tutor_verification_endpoint {
+            all_unverified_tutors(new_applicants: $new_applicants, verified_tutors: $verified_tutors, result_size: $result_size) {
+              ${globalFields}
+            }
+        }
+    }`,
+  tutorDetail: `
+    query tutorDetail($slug: String, $email: String) {
+      tutor_verification_endpoint {
+        tutor_detail(slug: $slug, email: $email) {
+          ${globalFields}
+          identification
+          phone_no
+          years_of_experience
+          tutor_description
+          educations
+          work_experiences
+          locations
+          potential_subjects
+          levels_with_exam
+          answers
+          classes
+          curriculum_used
+          curriculum_explanation
+        }
+      }
+    }`,
+  approveTutor: `
+    mutation approveTutor($email: String!, $verified: Boolean!){
+        approve_tutor(email: $email, verified: $verified, test: ${isDevelop}) {
+          user
+      } 
+    }`,
+  adminActionMutations: `
+      mutation adminActions($action: String!, $email: String!) {
+        admin_actions(action: $action, email: $email, test: ${isDevelop}) {
+          status
+          errors
+        }
+      }
+    `,
 };
 
-const tutor_detail = (key, value) => {
-  let params = `(${key}:${JSON.stringify(value)})`;
-  return ` {
-      tutor_verification_endpoint{
-        tutor_detail${params}{
-            ${globalFields}
-            phone_no
-            years_of_experience
-            tutor_description
-            educations
-            work_experiences
-            locations
-            potential_subjects
-            levels_with_exam
-            answers
-            classes
-            curriculum_used
-            curriculum_explanation
-        }
-    }
-}
-    `;
+const makeApiCall = (query, variables) => {
+  return axios.post(
+    BASE_URL,
+    {
+      query,
+      variables,
+    },
+    config
+  );
 };
-const approveTutorMutations = (email, verified) => {
-  return `
-    mutation{
-        approve_tutor(email:${JSON.stringify(email)},verified:${verified}){
-            user
-        }
-    }`;
-};
-const adminActionMutations = (email, action) => {
-  return `
-    mutation{
-        admin_actions(action:${JSON.stringify(action)}, email:${JSON.stringify(
-    email
-  )}){
-            status
-        }
-    }`;
-};
+
 function responseCallback(key) {
   return response => response.data.data.tutor_verification_endpoint[key];
 }
 function mutationCallback(mutation) {
   return response => response.data.data[mutation];
 }
+
 function getAllUnverifiedTutors(params) {
-  return axios
-    .post(baseUrl, { query: query(params) })
-    .then(responseCallback("all_unverified_tutors"));
+  let { selection, ...rest } = params;
+  return makeApiCall(queries['allUnverifiedTutors'], {
+    ...rest,
+    [selection]: true,
+  }).then(responseCallback('all_unverified_tutors'));
 }
 
-function fetchTutorDetail(props) {
-  let key = Object.keys(props).find(x => props[x] !== undefined);
-  return axios
-    .post(baseUrl, { query: tutor_detail(key, props[key]) })
-    .then(responseCallback("tutor_detail"));
+function fetchTutorDetail(params) {
+  return makeApiCall(queries['tutorDetail'], params).then(
+    responseCallback('tutor_detail')
+  );
 }
 
-function approveTutor(email, approved = false) {
-  return axios
-    .post(baseUrl, { query: approveTutorMutations(email, approved) })
-    .then(mutationCallback("approve_tutor"))
+function approveTutor(email, approved=false) {
+  return makeApiCall(queries['approveTutor'], {
+    email,
+    verified:approved,
+  })
+    .then(mutationCallback('approve_tutor'))
     .then(data => data.user);
 }
+
 function notifyTutorAboutEmail(email) {
-  return axios.post(baseUrl, {
-    query: adminActionMutations(email, "notify_about_email")
+  return makeApiCall(queries['adminActionMutations'], {
+    email,
+    action: 'notify_about_email',
   });
 }
 
 function approveTutorEmail(email) {
-  return axios.post(baseUrl, {
-    query: adminActionMutations(email, "approve_email")
+  return makeApiCall(queries['adminActionMutations'], {
+    email,
+    action: 'approve_email',
   });
 }
 
 function rejectProfilePic(email) {
-  return axios.post(baseUrl, {
-    query: adminActionMutations(email, "reject_profile_pic")
+  return makeApiCall(queries['adminActionMutations'], {
+    email,
+    action: 'reject_profile_pic',
   });
 }
 
 function approveIdentification(email) {
-  return axios.post(baseUrl, {
-    query: adminActionMutations(email, "approve_identification")
+  return makeApiCall(queries['adminActionMutations'], {
+    email,
+    action: 'approve_identification',
   });
 }
 
 function rejectIdentification(email) {
-  return axios.post(baseUrl, {
-    query: adminActionMutations(email, "reject_identification")
+  return makeApiCall(queries['adminActionMutations'], {
+    email,
+    action: 'reject_identification',
   });
 }
 
 function uploadProfilePicEmail(email) {
-  return axios.post(baseUrl, {
-    query: adminActionMutations(email, "upload_profile_pic_email")
+  return makeApiCall(queries['adminActionMutations'], {
+    email,
+    action: 'upload_profile_pic_email',
   });
 }
 
 function uploadVerificationIdEmail(email) {
-  return axios.post(baseUrl, {
-    query: adminActionMutations(email, "upload_verification_email")
+  return makeApiCall(queries['adminActionMutations'], {
+    email,
+    action: 'upload_verification_email',
   });
 }
 
 export default {
-  //tutor verification
   getAllUnverifiedTutors,
   fetchTutorDetail,
   approveTutor,
   notifyTutorAboutEmail,
   approveTutorEmail,
   rejectProfilePic,
-  rejectIdentification,
   approveIdentification,
+  rejectIdentification,
   uploadProfilePic: uploadProfilePicEmail,
   uploadVerificationId: uploadVerificationIdEmail
 };
