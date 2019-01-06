@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
-import {  Flex, Button } from "@rebass/emotion";
+import { Flex, Button } from "@rebass/emotion";
 import React from "react";
 import { ListItem } from "tuteria-shared/lib/shared/reusables";
 import { Link } from "react-router-dom";
@@ -24,7 +24,7 @@ export class TutorListPage extends React.Component {
     detailPageUrl: () => {}
   };
   componentDidMount() {
-    this.fetchList(true);
+    this.fetchList();
   }
   workedOn = slug => {};
   fetchList = (refresh = false) => {
@@ -75,7 +75,7 @@ export class TutorListPage extends React.Component {
                   this.setState(
                     { tutors: [], selection: e.target.value },
                     () => {
-                      this.fetchList();
+                      this.fetchList(true);
                     }
                   )
                 }

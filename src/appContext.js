@@ -43,12 +43,12 @@ function updateAnalytics(firebaseAction, type, agent) {
     return firebaseAction("saveAnalytics", [agent, newData]);
   });
 }
-function getWorkingData(firebaseAction, agent, updateState) {
-  return firebaseAction("getWorkingData", [agent]).then(data => {
-    updateState({ pending_verifications: data });
-    return data;
-  });
-}
+// function getWorkingData(firebaseAction, agent, updateState) {
+//   return firebaseAction("getWorkingData", [agent]).then(data => {
+//     updateState({ pending_verifications: data });
+//     return data;
+//   });
+// }
 export function autoSave(firebaseAction, state) {
   let { pending_verifications, agent = "Biola" } = state.context.state;
   return saveWorkingData(firebaseAction, agent, pending_verifications).then(
@@ -70,8 +70,9 @@ function getWorkingDataRecords(firebaseAction, value, { updateState, state }) {
   }
   return firebaseAction("getWorkingData", [agent, []], [])
     .then(data => {
-      updateState({ pending_verifications: data });
-      return data;
+      let result = data || [];
+      updateState({ pending_verifications: result });
+      return result;
     })
     .catch(err => {
       throw err;
@@ -101,6 +102,10 @@ const getUnverifiedTutors = (
   params,
   { getAdapter, state, updateState }
 ) => {
+  let { tutor_list = [] } = state.context.state;
+  if (!params.refresh && tutor_list.length > 0) {
+    return new Promise(resolve => resolve(tutor_list));
+  }
   return getWorkingDataRecords(firebaseAction, null, {
     state,
     updateState
@@ -382,13 +387,20 @@ const dispatch = (action, existingOptions = {}, firebaseFunc) => {
   };
   return options;
 };
-const componentDidMount = ({ updateState, state }, firebaseFunc) => {
-  let { agent = "Biola" } = state.context.state;
+const componentDidMount = (
+  { updateState, state, getAdapter },
+  firebaseFunc
+) => {
   function firebaseAction(key, args) {
     return firebaseFunc.loadFireStore().then(() => firebaseFunc[key](...args));
   }
-  getWorkingData(firebaseAction, agent, updateState).then(data => {
-    updateState({ pending_verifications: data });
+
+  getUnverifiedTutors(
+    firebaseAction,
+    { refresh: true },
+    { getAdapter, state, updateState }
+  ).then(data => {
+    updateState({ tutor_list: data });
   });
 };
 export default {
@@ -396,7 +408,8 @@ export default {
   actions,
   componentDidMount,
   state: {
-    pending_verifications: []
+    pending_verifications: [],
+    tutor_list: []
   },
   keys: {
     analytics: "tutor_analytics",
