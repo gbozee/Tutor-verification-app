@@ -24,7 +24,7 @@ export class TutorListPage extends React.Component {
     detailPageUrl: () => {},
   };
   componentDidMount() {
-    this.fetchList();
+    this.fetchList(true);
   }
   workedOn = slug => {};
   fetchList = (refresh = false) => {

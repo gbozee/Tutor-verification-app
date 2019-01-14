@@ -83,7 +83,6 @@ function fetchTutorDetail(
   props,
   { getAdapter, state, updateState }
 ) {
-  console.log(props)
   return Promise.all([
     getWorkingDataRecords(firebaseAction, null, {
       state,
