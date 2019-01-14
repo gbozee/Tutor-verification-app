@@ -40,6 +40,20 @@ function uploadVerificationIdEmail(email) {
   return LiveData.uploadVerificationId(email);
 }
 
+function skillAdminAction({ skill, email, action }) {
+  if (action === "freeze") {
+    return LiveData.freezingProfileStatus(email);
+  }
+  if (action === "unfreeze") {
+    return LiveData.freezingProfileStatus(email, false);
+  }
+  return LiveData.skillChangeStatus(skill.pk, action);
+}
+
+function getTutorSkills(params) {
+  return LiveData.tutorSkills(params.email);
+}
+
 export default {
   //tutor verification
   getAllUnverifiedTutors,
@@ -51,5 +65,7 @@ export default {
   rejectIdentification,
   approveIdentification,
   uploadProfilePic: uploadProfilePicEmail,
-  uploadVerificationId: uploadVerificationIdEmail
+  uploadVerificationId: uploadVerificationIdEmail,
+  skillAdminAction,
+  getTutorSkills
 };
