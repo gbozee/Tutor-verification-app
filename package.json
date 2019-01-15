@@ -9,7 +9,7 @@
     "react-dom": "^16.6.3",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.1",
-    "tuteria-shared": "gbozee/Shared-Admin-Lib#24504bb"
+    "tuteria-shared": "gbozee/Shared-Admin-Lib#f7d55f2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -22,11 +22,6 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
+  "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"],
   "devDependencies": {}
 }
