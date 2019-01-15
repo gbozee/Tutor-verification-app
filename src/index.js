@@ -7,7 +7,6 @@ import { Flex } from "@rebass/emotion";
 import { Route, Redirect, Link } from "react-router-dom";
 import ProtectedRoute from "tuteria-shared/lib/shared/ProtectedRoute";
 import devAdapter from "./adapters/devProd";
-import liveAdapter from "./adapters/live";
 import WithRouter from "tuteria-shared/lib/shared/PageSetup";
 import appContext from "./appContext";
 // import appFirebase from "./adapters/backupFirebase";
