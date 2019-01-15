@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
-import { Flex, Text, Heading, Link } from '@rebass/emotion';
+import { Flex, Text, Heading, Link, Box } from '@rebass/emotion';
 import { DialogButton } from 'tuteria-shared/lib/shared/primitives';
 import { HomePageSpinner } from 'tuteria-shared/lib/shared/primitives/Spinner';
 import React from 'react';
@@ -68,7 +68,7 @@ export class TutorDetailPage extends React.Component {
     });
   };
   localDispatch = (type, values) => {
-    console.log(values)
+    console.log(values);
     let { dispatch } = this.context;
     return dispatch({
       type,
@@ -250,6 +250,9 @@ export class TutorDetailPage extends React.Component {
     } = this.props;
     return Boolean(email);
   };
+  updateCurriculum = () => {
+    
+  }
   render() {
     let { data } = this.state;
     return Object.keys(data).length === 0 ? (
@@ -340,7 +343,7 @@ export class TutorDetailPage extends React.Component {
               }`}
             />
           ))}
-          <ListGroup name="Subject Veluation Dump" />
+          <ListGroup name="Subject Valuation Dump" />
           <Flex>
             <Flex
               css={css`
@@ -374,10 +377,25 @@ export class TutorDetailPage extends React.Component {
             </Flex>
           </Flex>
           {data.curriculum_explanation ? (
-            <>
-              <Heading>Curriculum Explanation</Heading>
-              <Text p={3}>{data.curriculum_explanation}</Text>
-            </>
+            <Box
+              my={3}
+              pb={3}
+              css={css`
+                border-bottom: 1px solid #e8e8e8;
+              `}
+            >
+              <ListGroup name="Curriculum Explanation" />
+              <Box>
+                <Text p={3}>{data.curriculum_explanation}</Text>
+              </Box>
+              <DialogButton
+                dialogText="Are you sure you want to notify this tutor?"
+                confirmAction={this.updateCurriculum}
+                disabled={this.state.loading}
+              >
+                Notify tutor to update curriculum
+              </DialogButton>
+            </Box>
           ) : null}
           <Flex justifyContent="space-between" pt={3}>
             {!data.verified && (

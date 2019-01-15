@@ -1,13 +1,13 @@
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
-import { Flex, Button } from "@rebass/emotion";
-import React from "react";
-import { ListItem } from "tuteria-shared/lib/shared/reusables";
-import { Link } from "react-router-dom";
-import { DataContext } from "tuteria-shared/lib/shared/DataContext";
-import { SpinnerContainer } from "tuteria-shared/lib/shared/primitives/Spinner";
+import { css, jsx } from '@emotion/core';
+import { Flex, Button } from '@rebass/emotion';
+import React from 'react';
+import { ListItem } from 'tuteria-shared/lib/shared/reusables';
+import { Link } from 'react-router-dom';
+import { DataContext } from 'tuteria-shared/lib/shared/DataContext';
+import { SpinnerContainer } from 'tuteria-shared/lib/shared/primitives/Spinner';
 
-import { DateFilter } from "tuteria-shared/lib/shared/DateFilter";
+import { DateFilter } from 'tuteria-shared/lib/shared/DateFilter';
 function determineAge(date) {
   let year = new Date(date).getFullYear();
 
@@ -19,6 +19,7 @@ export class TutorListPage extends React.Component {
   state = {
     tutors: [],
     selection: '',
+    searchParams: ""
   };
   static defaultProps = {
     detailPageUrl: () => {},
@@ -27,6 +28,13 @@ export class TutorListPage extends React.Component {
     this.fetchList(true);
   }
   workedOn = slug => {};
+  onSearch = e => {
+    this.setState({ searchParams: e.target.value });
+  };
+  onKeyDown = e => {
+    if (e.keyCode === 13) {
+    }
+  };
   fetchList = (refresh = false) => {
     let { dispatch, actions } = this.context;
     dispatch({
@@ -69,9 +77,11 @@ export class TutorListPage extends React.Component {
             >
               Fetch More Records
             </Button>
-            <Flex flexDirection="column">
+            <Flex flexDirection="column" css={css`flex: 1;`}>
               <DateFilter
                 displayDate={false}
+                onKeyDown={this.onKeyDown}
+                onSearchChange={this.onSearch}
                 selection={this.state.selection}
                 onFilterChange={e =>
                   this.setState(
@@ -85,8 +95,8 @@ export class TutorListPage extends React.Component {
                 filterOptions={[
                   { value: '', label: 'All' },
                   {
-                    value: "new_applicants",
-                    label: "New Applicants Only"
+                    value: 'new_applicants',
+                    label: 'New Applicants Only',
                   },
                   { value: 'verified_tutors', label: 'Verified Tutors' },
                 ]}
