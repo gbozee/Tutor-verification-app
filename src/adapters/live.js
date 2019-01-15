@@ -37,6 +37,7 @@ const skillFields = `
   }
   quiz_sitting{
     score
+    passed
   }
   public_url
   active_bookings
@@ -249,7 +250,7 @@ function transformers(x) {
       hours_taught: x.hours_taught,
       active_bookings: x.active_bookings
     },
-    quiz: x.quiz_siting || { score: 0, pass_mark: 0 }
+    quiz: x.quiz_sitting || { score: 0, pass_mark: 0 }
   };
 }
 export default {

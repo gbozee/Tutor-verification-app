@@ -545,7 +545,7 @@ export class TutorDetailPage extends React.Component {
                         if (a.status > b.status) return 1;
                         return 0;
                       }}
-                      keyIndex="skill_name"
+                      keyFunc={ss => `${ss.skill_name}-${ss.status}`}
                     />
                   </Flex>
                   <Flex
@@ -559,6 +559,19 @@ export class TutorDetailPage extends React.Component {
                     <Switch>
                       <Route
                         path="/tutor-list/:slug/subjects/:skill"
+                        render={pathProps => {
+                          return (
+                            <SubjectDetailSection
+                              {...pathProps}
+                              updateSubjectStatus={this.updateSubjectStatus}
+                              skills={this.state.skills}
+                              onRetakeTest={this.updateSubjectStatus}
+                            />
+                          );
+                        }}
+                      />
+                      <Route
+                        path="/worked-records/:email/subjects/:skill"
                         render={pathProps => {
                           return (
                             <SubjectDetailSection
