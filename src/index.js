@@ -10,10 +10,11 @@ import devAdapter from "./adapters/devProd";
 import WithRouter from "tuteria-shared/lib/shared/PageSetup";
 import appContext from "./appContext";
 // import appFirebase from "./adapters/backupFirebase";
-
-const TutorDetailPage = React.lazy(() => import("./pages/TutorDetailPage"));
-const TutorListPage = React.lazy(() => import(`./pages/TutorListPage`));
-const WorkingSection = React.lazy(() => import(`./pages/WorkingSection`));
+const TutorDetailPage = React.lazy(() => import("tuteria-shared/lib/pages/TutorDetailPage"));
+const TutorListPage = React.lazy(() =>
+  import(`tuteria-shared/lib/pages/TutorListPage`)
+);
+const WorkingSection = React.lazy(() => import(`tuteria-shared/lib/pages/WorkingSection`));
 
 function App() {
   return (
